@@ -1,0 +1,21 @@
+.forms-container {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.forms-header, .forms-row {
+    display: table-row;
+}
+
+.forms-cell {
+    display: table-cell;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.forms-header .forms-cell {
+    font-weight: bold;
+    background-color: #f2f2f2;
+}

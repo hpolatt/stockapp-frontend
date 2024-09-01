@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-
+import '../css/List.css'; 
 
 const Categories = () => {
     const [categories, setCategories] = useState([]);
-    const [newCategory, setNewCategory] = useState({ name: '', sku: '', quantity: 0 });
+    const [newCategory, setNewCategory] = useState({ name: '', description: '' });
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        // Ürünleri fetch ile alın
+        // Fetch categories
         fetch("/api/settings/categories")
             .then(response => response.json())
             .then(data => setCategories(data));
@@ -18,7 +18,7 @@ const Categories = () => {
 
     const handleCategorySubmit = (e) => {
         e.preventDefault();
-        // Yeni ürünü API ile gönder
+        // Send new category to API
         fetch("/api/settings/categories", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -26,17 +26,25 @@ const Categories = () => {
         }).then(response => response.json())
           .then(data => setCategories([...categories, data]));
 
-        setNewCategory({ name: '', sku: '', quantity: 0 });
+        setNewCategory({ name: '', description: '' });
+        setShowForm(false);
     };
 
     return (
         <div>
             <h2>Categories</h2>
-            <ul>
-                {categories.map(category => (
-                    <li key={category.id}>{category.name} - {category.sku} - {category.quantity}</li>
+            <div className="forms-container">
+                <div className="forms-header">
+                    <div className="forms-cell">Name</div>
+                    <div className="forms-cell">Description</div>
+                </div>
+                {categories.map(product => (
+                    <div className="forms-row" key={product.id}>
+                        <div className="forms-cell">{product.name}</div>
+                        <div className="forms-cell">{product.description}</div>
+                    </div>
                 ))}
-            </ul>
+            </div>
 
             <Button variant="primary" onClick={() => setShowForm(true)} style={{ position: 'fixed', bottom: '40px', right: '40px' }}>+</Button>
 
@@ -46,27 +54,22 @@ const Categories = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleCategorySubmit}>
-                        <Form.Group className="mb-3" controlId="formType">
+                        <Form.Group className="mb-3" controlId="formName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" value={newCategory.type} onChange={e => setNewCategory({ ...newCategory, type: e.target.value })} />
+                            <Form.Control type="text" value={newCategory.name} onChange={e => setNewCategory({ ...newCategory, name: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formDate">
-                            <Form.Label>SKU:</Form.Label>
-                            <Form.Control type="text" value={newCategory.date} onChange={e => setNewCategory({ ...newCategory, date: e.target.value })} />
+                        <Form.Group className="mb-3" controlId="formDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" value={newCategory.description} onChange={e => setNewCategory({ ...newCategory, description: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formCategoryId">
-                            <Form.Label>Quantity:</Form.Label>
-                            <Form.Control type="number" value={newCategory.categoryId} onChange={e => setNewCategory({ ...newCategory, categoryId: e.target.value })} />
-                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Save Changes
+                        </Button>
                     </Form>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowForm(false)}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit" form="myForm">
-                        Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>

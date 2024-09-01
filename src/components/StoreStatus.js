@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../css/List.css'; 
 
 const StoreStatus = () => {
     const [stores, setStores] = useState([]);
@@ -21,7 +22,8 @@ const StoreStatus = () => {
             <h1>Store Status</h1>
             <ul>
                 {stores.map(store => (
-                    <li key={store.id} onClick={() => handleStoreClick(store)}>
+                    // onClick={() => handleStoreClick(store)}
+                    <li key={store.id} >
                         {store.name} - Last entry/exit: {store.lastEntryExitDate}
                     </li>
                 ))}

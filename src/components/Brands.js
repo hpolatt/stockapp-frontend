@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import '../css/List.css'; 
 
 const Brands = () => {
     const [brands, setBrands] = useState([]);
-    const [newBrand, setNewBrand] = useState({ name: '', sku: '', quantity: 0 });
+    const [newBrand, setNewBrand] = useState({
+        name: '',
+        description: '',
+        email: '',
+        address: '',
+        phone: ''
+    });
     const [showForm, setShowForm] = useState(false);
     
     useEffect(() => {
-        // Ürünleri fetch ile alın
+        // Fetch brands
         fetch("/api/settings/brands")
             .then(response => response.json())
             .then(data => setBrands(data));
@@ -17,7 +24,7 @@ const Brands = () => {
 
     const handleBrandSubmit = (e) => {
         e.preventDefault();
-        // Yeni ürünü API ile gönder
+        // Send new brand to API
         fetch("/api/settings/brands", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -25,17 +32,37 @@ const Brands = () => {
         }).then(response => response.json())
             .then(data => setBrands([...brands, data]));
 
-        setNewBrand({ name: '', sku: '', quantity: 0 });
+        setNewBrand({
+            name: '',
+            description: '',
+            email: '',
+            address: '',
+            phone: ''
+        });
+        setShowForm(false);
     };
 
     return (
         <div>
             <h2>Brands</h2>
-            <ul>
+            <div className="forms-container">
+                <div className="forms-header">
+                    <div className="forms-cell">Name</div>
+                    <div className="forms-cell">Description</div>
+                    <div className="forms-cell">Email</div>
+                    <div className="forms-cell">Address</div>
+                    <div className="forms-cell">Phone</div>
+                </div>
                 {brands.map(brand => (
-                    <li key={brand.id}>{brand.name} - {brand.sku} - {brand.quantity}</li>
+                    <div className="forms-row" key={brand.id}>
+                        <div className="forms-cell">{brand.name}</div>
+                        <div className="forms-cell">{brand.description}</div>
+                        <div className="forms-cell">{brand.email}</div>
+                        <div className="forms-cell">{brand.address}</div>
+                        <div className="forms-cell">{brand.phone}</div>
+                    </div>
                 ))}
-            </ul>
+            </div>
 
             <Button variant="primary" onClick={() => setShowForm(true)} style={{ position: 'fixed', bottom: '40px', right: '40px' }}>+</Button>
 
@@ -45,27 +72,34 @@ const Brands = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleBrandSubmit}>
-                        <Form.Group className="mb-3" controlId="formType">
+                        <Form.Group className="mb-3" controlId="formName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" value={newBrand.type} onChange={e => setNewBrand({ ...newBrand, type: e.target.value })} />
+                            <Form.Control type="text" value={newBrand.name} onChange={e => setNewBrand({ ...newBrand, name: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formDate">
-                            <Form.Label>SKU:</Form.Label>
-                            <Form.Control type="text" value={newBrand.date} onChange={e => setNewBrand({ ...newBrand, date: e.target.value })} />
+                        <Form.Group className="mb-3" controlId="formDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" value={newBrand.description} onChange={e => setNewBrand({ ...newBrand, description: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBrandId">
-                            <Form.Label>Quantity:</Form.Label>
-                            <Form.Control type="number" value={newBrand.brandId} onChange={e => setNewBrand({ ...newBrand, brandId: e.target.value })} />
+                        <Form.Group className="mb-3" controlId="formEmail">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" value={newBrand.email} onChange={e => setNewBrand({ ...newBrand, email: e.target.value })} />
                         </Form.Group>
+                        <Form.Group className="mb-3" controlId="formAddress">
+                            <Form.Label>Address</Form.Label>
+                            <Form.Control type="text" value={newBrand.address} onChange={e => setNewBrand({ ...newBrand, address: e.target.value })} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formPhone">
+                            <Form.Label>Phone</Form.Label>
+                            <Form.Control type="text" value={newBrand.phone} onChange={e => setNewBrand({ ...newBrand, phone: e.target.value })} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Save Changes
+                        </Button>
                     </Form>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowForm(false)}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit" form="myForm">
-                        Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import '../css/List.css'; 
 
 const Stores = () => {
     const [stores, setStores] = useState([]);
-    const [newStore, setNewStore] = useState({ name: '', sku: '', quantity: 0 });
+    const [newStore, setNewStore] = useState({ name: '', description: '', notes: '' });
     const [showForm, setShowForm] = useState(false);
 
-
     useEffect(() => {
-        // Ürünleri fetch ile alın
+        // Fetch stores
         fetch("/api/settings/stores")
             .then(response => response.json())
             .then(data => setStores(data));
@@ -18,25 +18,35 @@ const Stores = () => {
 
     const handleStoreSubmit = (e) => {
         e.preventDefault();
-        // Yeni ürünü API ile gönder
+        // Send new store to API
         fetch("/api/settings/stores", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newStore)
         }).then(response => response.json())
-          .then(data => setStores([...stores, data]));
+            .then(data => setStores([...stores, data]));
 
-        setNewStore({ name: '', sku: '', quantity: 0 });
+        setNewStore({ name: '', description: '', notes: '' });
+        setShowForm(false);
     };
 
     return (
         <div>
             <h2>Stores</h2>
-            <ul>
-                {stores.map(store => (
-                    <li key={store.id}>{store.name} - {store.sku} - {store.quantity}</li>
+            <div className="forms-container">
+                <div className="forms-header">
+                    <div className="forms-cell">Name</div>
+                    <div className="forms-cell">Description</div>
+                    <div className="forms-cell">Notes</div>
+                </div>
+                {stores.map(product => (
+                    <div className="forms-row" key={product.id}>
+                        <div className="forms-cell">{product.name}</div>
+                        <div className="forms-cell">{product.description}</div>
+                        <div className="forms-cell">{product.notes}</div>
+                    </div>
                 ))}
-            </ul>
+            </div>
 
             <Button variant="primary" onClick={() => setShowForm(true)} style={{ position: 'fixed', bottom: '40px', right: '40px' }}>+</Button>
 
@@ -46,27 +56,26 @@ const Stores = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleStoreSubmit}>
-                        <Form.Group className="mb-3" controlId="formType">
+                        <Form.Group className="mb-3" controlId="formName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" value={newStore.type} onChange={e => setNewStore({ ...newStore, type: e.target.value })} />
+                            <Form.Control type="text" value={newStore.name} onChange={e => setNewStore({ ...newStore, name: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formDate">
-                            <Form.Label>SKU:</Form.Label>
-                            <Form.Control type="text" value={newStore.date} onChange={e => setNewStore({ ...newStore, date: e.target.value })} />
+                        <Form.Group className="mb-3" controlId="formDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" value={newStore.description} onChange={e => setNewStore({ ...newStore, description: e.target.value })} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formStoreId">
-                            <Form.Label>Quantity:</Form.Label>
-                            <Form.Control type="number" value={newStore.storeId} onChange={e => setNewStore({ ...newStore, storeId: e.target.value })} />
+                        <Form.Group className="mb-3" controlId="formNotes">
+                            <Form.Label>Notes</Form.Label>
+                            <Form.Control type="text" value={newStore.notes} onChange={e => setNewStore({ ...newStore, notes: e.target.value })} />
                         </Form.Group>
                     </Form>
-
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="primary" type="submit" onClick={(event) => handleStoreSubmit(event)}>
+                        Save Changes
+                    </Button>
                     <Button variant="secondary" onClick={() => setShowForm(false)}>
                         Close
-                    </Button>
-                    <Button variant="primary" type="submit" form="myForm">
-                        Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>
