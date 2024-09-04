@@ -19,14 +19,14 @@ const EntryExitForms = () => {
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        getAllRecords("api/entry-exit-forms")
+        getAllRecords("entry-exit-forms")
             .then(data => setForms(data));
     }, []);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
         
-        addRecord("api/entry-exit-forms", newForm)
+        addRecord("entry-exit-forms", newForm)
             .then(data => setForms([...forms, data]));
         
         setNewForm({

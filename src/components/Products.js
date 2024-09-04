@@ -21,13 +21,13 @@ const Products = () => {
 
     useEffect(() => {
         
-        getAllRecords("settings/products")
+        getAllRecords("products")
             .then(data => setProducts(data));
     }, []);
 
     const handleProductSubmit = (e) => {
         e.preventDefault();
-        addRecord("settings/products", newProduct)
+        addRecord("products", newProduct)
             .then(data => setProducts([...products, data]));
         
         setNewProduct({
