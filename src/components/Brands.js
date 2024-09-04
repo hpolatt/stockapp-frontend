@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import '../css/List.css'; 
+import { getAllRecords, addRecord } from '../api/Services.js';
+import '../css/List.css';
 
 const Brands = () => {
     const [brands, setBrands] = useState([]);
@@ -14,23 +15,16 @@ const Brands = () => {
         phone: ''
     });
     const [showForm, setShowForm] = useState(false);
-    
+
     useEffect(() => {
-        // Fetch brands
-        fetch("/api/settings/brands")
-            .then(response => response.json())
+        getAllRecords("settings/brands")
             .then(data => setBrands(data));
+            
     }, []);
 
     const handleBrandSubmit = (e) => {
         e.preventDefault();
-        // Send new brand to API
-        fetch("/api/settings/brands", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newBrand)
-        }).then(response => response.json())
-            .then(data => setBrands([...brands, data]));
+        addRecord("settings/brands", newBrand).then(data => setBrands([...brands, data])); 
 
         setNewBrand({
             name: '',

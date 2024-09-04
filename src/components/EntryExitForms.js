@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { getAllRecords, addRecord } from '../api/Services.js';
 import '../css/List.css';
 
 const EntryExitForms = () => {
@@ -18,22 +19,16 @@ const EntryExitForms = () => {
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        // Fetch forms
-        fetch("/api/entry-exit-forms")
-            .then(response => response.json())
+        getAllRecords("api/entry-exit-forms")
             .then(data => setForms(data));
     }, []);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        // Send new form to API
-        fetch("/api/entry-exit-forms", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newForm)
-        }).then(response => response.json())
+        
+        addRecord("api/entry-exit-forms", newForm)
             .then(data => setForms([...forms, data]));
-
+        
         setNewForm({
             date: '',
             quantity: '',

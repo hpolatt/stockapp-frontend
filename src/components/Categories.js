@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { getAllRecords, addRecord } from '../api/Services.js';
 import '../css/List.css'; 
 
 const Categories = () => {
@@ -11,20 +12,14 @@ const Categories = () => {
 
     useEffect(() => {
         // Fetch categories
-        fetch("/api/settings/categories")
-            .then(response => response.json())
+        getAllRecords("settings/categories")
             .then(data => setCategories(data));
     }, []);
 
     const handleCategorySubmit = (e) => {
         e.preventDefault();
-        // Send new category to API
-        fetch("/api/settings/categories", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newCategory)
-        }).then(response => response.json())
-          .then(data => setCategories([...categories, data]));
+        addRecord("settings/categories", newCategory)
+            .then(data => setCategories([...categories, data]));
 
         setNewCategory({ name: '', description: '' });
         setShowForm(false);

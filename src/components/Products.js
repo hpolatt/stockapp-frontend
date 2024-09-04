@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { getAllRecords, addRecord } from '../api/Services.js';
 import '../css/List.css'; 
 
 const Products = () => {
@@ -19,22 +20,16 @@ const Products = () => {
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        // Fetch products
-        fetch("/api/settings/products")
-            .then(response => response.json())
+        
+        getAllRecords("settings/products")
             .then(data => setProducts(data));
     }, []);
 
     const handleProductSubmit = (e) => {
         e.preventDefault();
-        // Send new product to API
-        fetch("/api/settings/products", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newProduct)
-        }).then(response => response.json())
+        addRecord("settings/products", newProduct)
             .then(data => setProducts([...products, data]));
-
+        
         setNewProduct({
             name: '',
             description: '',

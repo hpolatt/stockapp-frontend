@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = await onLogin(email, password);
+      const token = await onLogin(username, password);
       if (token) {
         localStorage.setItem('jwtToken', token);
         navigate('/settings');
@@ -30,9 +30,9 @@ const Login = ({ onLogin }) => {
           <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem' }}>Email:</label>
           <input
             type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="username"
+            value={username}
+            onChange={(e) => setUserName(e.target.value)}
             style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
             required
           />

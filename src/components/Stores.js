@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { getAllRecords, addRecord } from '../api/Services.js';
 import '../css/List.css'; 
 
 const Stores = () => {
@@ -10,22 +11,14 @@ const Stores = () => {
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
-        // Fetch stores
-        fetch("/api/settings/stores")
-            .then(response => response.json())
+        getAllRecords("settings/stores")
             .then(data => setStores(data));
     }, []);
 
     const handleStoreSubmit = (e) => {
         e.preventDefault();
-        // Send new store to API
-        fetch("/api/settings/stores", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newStore)
-        }).then(response => response.json())
+        addRecord("settings/stores", newStore)
             .then(data => setStores([...stores, data]));
-
         setNewStore({ name: '', description: '', notes: '' });
         setShowForm(false);
     };

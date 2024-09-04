@@ -11,7 +11,9 @@ const page = (Component) => {
     return (
         <div className="App">
             <Sidebar />
-            <Component />
+            <div className="content">
+                <Component />
+            </div>
         </div>
     );
 };
@@ -22,7 +24,7 @@ const RequireAuth = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
         if (!token) {
-            navigate('/login'); // Token yoksa login sayfasına yönlendir
+            navigate('/login');
         }
     }, [navigate]);
 
@@ -30,7 +32,7 @@ const RequireAuth = ({ children }) => {
 };
 
 const App = () => {
-    const handleLogin = async (email, password) => {
+    const handleLogin = async (username, password) => {
         try {
             // Backend'e istek gönderip JWT token'ı alıyoruz
             const response = await fetch('/api/login', {
@@ -38,12 +40,14 @@ const App = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username, password }),
             });
 
             if (response.ok) {
-                const data = await response.json();
-                return data.token;
+                const res = await response.text();
+                localStorage.setItem('jwtToken', res);
+                // const data = await response.json();
+                // return data.token;
             } else {
                 return null;
             }

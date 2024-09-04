@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAllRecords } from '../api/Services.js';
 import '../css/List.css'; 
 
 const StoreStatus = () => {
@@ -6,9 +7,7 @@ const StoreStatus = () => {
     const [selectedStore, setSelectedStore] = useState(null);
 
     useEffect(() => {
-        // Depoları fetch ile alın
-        fetch("/api/stores")
-            .then(response => response.json())
+        getAllRecords("stores")
             .then(data => setStores(data));
     }, []);
 
